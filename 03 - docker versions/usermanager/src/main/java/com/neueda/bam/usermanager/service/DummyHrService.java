@@ -107,7 +107,7 @@ public class DummyHrService {
         for (int i = 0; i < 200; i++) {
             list.setResults(users.subList(0, 199));
         }
-        lastUsed = 1g99;
+        lastUsed = 199;
         return list;
     }
 
