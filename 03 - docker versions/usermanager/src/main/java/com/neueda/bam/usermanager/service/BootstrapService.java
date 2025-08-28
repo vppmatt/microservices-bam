@@ -6,9 +6,7 @@ import com.neueda.bam.usermanager.domain.HRUserList;
 import com.neueda.bam.usermanager.domain.User;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Service
@@ -19,10 +17,6 @@ public class BootstrapService {
 
     @Autowired
     DummyHrService dummyHrService;
-
-    @Value("${app.rest.hr.url}")
-    String hrUrl;
-
 
     @PostConstruct
     public void initData() {

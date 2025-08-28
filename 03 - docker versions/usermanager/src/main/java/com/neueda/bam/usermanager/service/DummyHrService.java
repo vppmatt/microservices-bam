@@ -12,158 +12,102 @@ import java.util.List;
 @Service
 public class DummyHrService {
 
-    private List<HRUser> users;
+    private List<HRUser> users = new ArrayList<>();
     private int lastUsed = 0;
+
+    private HRUser createUser(String it) {
+        String[] parts = it.split("\\|");
+        HRUser user = new HRUser();
+        HRUser.Name name = new HRUser.Name();
+        name.setFirst(parts[4].trim());
+        name.setLast(parts[5].trim());
+        name.setTitle(parts[6].trim());
+        user.setName(name);
+        user.setEmail(parts[3].trim());
+        HRUser.Location location = new HRUser.Location();
+        String[] address = parts[2].trim().split(",");
+        HRUser.Street street = new HRUser.Street();
+        street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
+        street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
+        location.setStreet(street);
+        location.setCity(address[1].trim());
+        location.setState(address[2].trim());
+        location.setPostcode(address[3].trim());
+        location.setCountry(address[4].trim());
+        user.setLocation(location);
+        return user;
+    }
 
     @PostConstruct
     public void setup() {
-        users = new ArrayList<>();
         List<String> u = userList1.lines().toList();
         for (String it : u) {
-            String[] parts = it.split("\\|");
-            HRUser user = new HRUser();
-            HRUser.Name name = new HRUser.Name();
-            name.setFirst(parts[3].trim());
-            name.setLast(parts[4].trim());
-            name.setTitle(parts[5].trim());
-            user.setName(name);
-            user.setEmail(parts[2].trim());
-            HRUser.Location location = new HRUser.Location();
-            String[] address = parts[1].trim().split(",");
-            HRUser.Street street = new HRUser.Street();
-            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
-            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
-            location.setStreet(street);
-            location.setCity(address[1].trim());
-            location.setState(address[2].trim());
-            location.setPostcode(address[3].trim());
-            location.setCountry(address[4].trim());
-            user.setLocation(location);
-            users.add(user);
+            try {
+                users.add(createUser(it));
+                System.out.println("Added user " + it);
+            }
+            catch (Exception e) {
+                //ignore
+            }
         }
         u = userList2.lines().toList();
         for (String it : u) {
-            String[] parts = it.split("\\|");
-            HRUser user = new HRUser();
-            HRUser.Name name = new HRUser.Name();
-            name.setFirst(parts[3].trim());
-            name.setLast(parts[4].trim());
-            name.setTitle(parts[5].trim());
-            user.setName(name);
-            user.setEmail(parts[2].trim());
-            HRUser.Location location = new HRUser.Location();
-            String[] address = parts[1].trim().split(",");
-            HRUser.Street street = new HRUser.Street();
-            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
-            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
-            location.setStreet(street);
-            location.setCity(address[1].trim());
-            location.setState(address[2].trim());
-            location.setPostcode(address[3].trim());
-            location.setCountry(address[4].trim());
-            user.setLocation(location);
-            users.add(user);
+            try {
+                users.add(createUser(it));
+                System.out.println("Added user " + it);
+            }
+            catch (Exception e) {
+                //ignore
+            }
         }
         u = userList3.lines().toList();
         for (String it : u) {
-            String[] parts = it.split("\\|");
-            HRUser user = new HRUser();
-            HRUser.Name name = new HRUser.Name();
-            name.setFirst(parts[3].trim());
-            name.setLast(parts[4].trim());
-            name.setTitle(parts[5].trim());
-            user.setName(name);
-            user.setEmail(parts[2].trim());
-            HRUser.Location location = new HRUser.Location();
-            String[] address = parts[1].trim().split(",");
-            HRUser.Street street = new HRUser.Street();
-            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
-            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
-            location.setStreet(street);
-            location.setCity(address[1].trim());
-            location.setState(address[2].trim());
-            location.setPostcode(address[3].trim());
-            location.setCountry(address[4].trim());
-            user.setLocation(location);
-            users.add(user);
+            try {
+                users.add(createUser(it));
+                System.out.println("Added user " + it);
+            }
+            catch (Exception e) {
+                //ignore
+            }
         }
         u = userList4.lines().toList();
         for (String it : u) {
-            String[] parts = it.split("\\|");
-            HRUser user = new HRUser();
-            HRUser.Name name = new HRUser.Name();
-            name.setFirst(parts[3].trim());
-            name.setLast(parts[4].trim());
-            name.setTitle(parts[5].trim());
-            user.setName(name);
-            user.setEmail(parts[2].trim());
-            HRUser.Location location = new HRUser.Location();
-            String[] address = parts[1].trim().split(",");
-            HRUser.Street street = new HRUser.Street();
-            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
-            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
-            location.setStreet(street);
-            location.setCity(address[1].trim());
-            location.setState(address[2].trim());
-            location.setPostcode(address[3].trim());
-            location.setCountry(address[4].trim());
-            user.setLocation(location);
-            users.add(user);
+            try {
+                users.add(createUser(it));
+                System.out.println("Added user " + it);
+            }
+            catch (Exception e) {
+                //ignore
+            }
         }
         u = userList5.lines().toList();
         for (String it : u) {
-            String[] parts = it.split("\\|");
-            HRUser user = new HRUser();
-            HRUser.Name name = new HRUser.Name();
-            name.setFirst(parts[3].trim());
-            name.setLast(parts[4].trim());
-            name.setTitle(parts[5].trim());
-            user.setName(name);
-            user.setEmail(parts[2].trim());
-            HRUser.Location location = new HRUser.Location();
-            String[] address = parts[1].trim().split(",");
-            HRUser.Street street = new HRUser.Street();
-            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
-            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
-            location.setStreet(street);
-            location.setCity(address[1].trim());
-            location.setState(address[2].trim());
-            location.setPostcode(address[3].trim());
-            location.setCountry(address[4].trim());
-            user.setLocation(location);
-            users.add(user);
+            try {
+                users.add(createUser(it));
+                System.out.println("Added user " + it);
+            }
+            catch (Exception e) {
+                //ignore
+            }
         }
         u = userList6.lines().toList();
         for (String it : u) {
-            String[] parts = it.split("\\|");
-            HRUser user = new HRUser();
-            HRUser.Name name = new HRUser.Name();
-            name.setFirst(parts[3].trim());
-            name.setLast(parts[4].trim());
-            name.setTitle(parts[5].trim());
-            user.setName(name);
-            user.setEmail(parts[2].trim());
-            HRUser.Location location = new HRUser.Location();
-            String[] address = parts[1].trim().split(",");
-            HRUser.Street street = new HRUser.Street();
-            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
-            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
-            location.setStreet(street);
-            location.setCity(address[1].trim());
-            location.setState(address[2].trim());
-            location.setPostcode(address[3].trim());
-            location.setCountry(address[4].trim());
-            user.setLocation(location);
-            users.add(user);
+            try {
+                users.add(createUser(it));
+                System.out.println("Added user " + it);
+            }
+            catch (Exception e) {
+                //ignore
+            }
         }
     }
 
     public HRUserList get100() {
         HRUserList list = new HRUserList();
-        for (int i = 0; i < 100; i++) {
-            list.setResults(users.subList(0, 99));
+        for (int i = 0; i < 200; i++) {
+            list.setResults(users.subList(0, 199));
         }
-        lastUsed = 99;
+        lastUsed = 1g99;
         return list;
     }
 

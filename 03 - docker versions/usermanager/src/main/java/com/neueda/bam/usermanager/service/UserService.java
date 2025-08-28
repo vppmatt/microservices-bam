@@ -24,9 +24,6 @@ public class UserService {
     @Autowired
     MessagingService messagingService;
 
-    @Value("${app.rest.hr.url}")
-    String hrUrl;
-
     public User findUser(Integer id) throws UserNotFoundException {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
