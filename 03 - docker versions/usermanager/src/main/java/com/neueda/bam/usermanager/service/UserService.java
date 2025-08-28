@@ -19,7 +19,7 @@ public class UserService {
     UserRepository userRepository;
 
     @Autowired
-    RestTemplate restTemplate;
+    DummyHrService dummyHrService;
 
     @Autowired
     MessagingService messagingService;
@@ -40,8 +40,7 @@ public class UserService {
 
 
     public User getUserFromHRSystem() {
-        HRUserList list = restTemplate.getForObject(hrUrl, HRUserList.class);
-        User user = list.getUserFromResults();
+        User user =  dummyHrService.getNext();
         userRepository.save(user);
         messagingService.sendNewUserMessage(user);
         return user;

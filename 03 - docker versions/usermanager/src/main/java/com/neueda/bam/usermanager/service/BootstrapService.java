@@ -18,7 +18,7 @@ public class BootstrapService {
     UserRepository userRepository;
 
     @Autowired
-    RestTemplate restTemplate;
+    DummyHrService dummyHrService;
 
     @Value("${app.rest.hr.url}")
     String hrUrl;
@@ -27,7 +27,7 @@ public class BootstrapService {
     @PostConstruct
     public void initData() {
         if (userRepository.count() == 0) {
-            HRUserList list = restTemplate.getForObject(hrUrl + "&results=5000", HRUserList.class);
+            HRUserList list = dummyHrService.get100();
             List<User> users = list.getResults().stream().map(HRUser::toUser).toList();
             for (User user : users) {
                 try {
