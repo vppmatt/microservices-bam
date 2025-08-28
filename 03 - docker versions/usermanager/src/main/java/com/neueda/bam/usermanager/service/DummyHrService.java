@@ -3,6 +3,7 @@ package com.neueda.bam.usermanager.service;
 import com.neueda.bam.usermanager.domain.HRUser;
 import com.neueda.bam.usermanager.domain.HRUserList;
 import com.neueda.bam.usermanager.domain.User;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,7 +15,8 @@ public class DummyHrService {
     private List<HRUser> users;
     private int lastUsed = 0;
 
-    public DummyHrService() {
+    @PostConstruct
+    public void setup() {
         users = new ArrayList<>();
         List<String> u = userList1.lines().toList();
         for (String it : u) {
