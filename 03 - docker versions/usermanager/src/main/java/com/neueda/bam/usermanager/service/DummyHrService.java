@@ -26,6 +26,17 @@ public class DummyHrService {
             name.setTitle(parts[5].trim());
             user.setName(name);
             user.setEmail(parts[2].trim());
+            HRUser.Location location = new HRUser.Location();
+            String[] address = parts[1].trim().split(",");
+            HRUser.Street street = new HRUser.Street();
+            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
+            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
+            location.setStreet(street);
+            location.setCity(address[1].trim());
+            location.setState(address[2].trim());
+            location.setPostcode(address[3].trim());
+            location.setCountry(address[4].trim());
+            user.setLocation(location);
             users.add(user);
         }
         u = userList2.lines().toList();
@@ -38,6 +49,17 @@ public class DummyHrService {
             name.setTitle(parts[5].trim());
             user.setName(name);
             user.setEmail(parts[2].trim());
+            HRUser.Location location = new HRUser.Location();
+            String[] address = parts[1].trim().split(",");
+            HRUser.Street street = new HRUser.Street();
+            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
+            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
+            location.setStreet(street);
+            location.setCity(address[1].trim());
+            location.setState(address[2].trim());
+            location.setPostcode(address[3].trim());
+            location.setCountry(address[4].trim());
+            user.setLocation(location);
             users.add(user);
         }
         u = userList3.lines().toList();
@@ -50,6 +72,17 @@ public class DummyHrService {
             name.setTitle(parts[5].trim());
             user.setName(name);
             user.setEmail(parts[2].trim());
+            HRUser.Location location = new HRUser.Location();
+            String[] address = parts[1].trim().split(",");
+            HRUser.Street street = new HRUser.Street();
+            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
+            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
+            location.setStreet(street);
+            location.setCity(address[1].trim());
+            location.setState(address[2].trim());
+            location.setPostcode(address[3].trim());
+            location.setCountry(address[4].trim());
+            user.setLocation(location);
             users.add(user);
         }
         u = userList4.lines().toList();
@@ -62,6 +95,17 @@ public class DummyHrService {
             name.setTitle(parts[5].trim());
             user.setName(name);
             user.setEmail(parts[2].trim());
+            HRUser.Location location = new HRUser.Location();
+            String[] address = parts[1].trim().split(",");
+            HRUser.Street street = new HRUser.Street();
+            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
+            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
+            location.setStreet(street);
+            location.setCity(address[1].trim());
+            location.setState(address[2].trim());
+            location.setPostcode(address[3].trim());
+            location.setCountry(address[4].trim());
+            user.setLocation(location);
             users.add(user);
         }
         u = userList5.lines().toList();
@@ -74,6 +118,17 @@ public class DummyHrService {
             name.setTitle(parts[5].trim());
             user.setName(name);
             user.setEmail(parts[2].trim());
+            HRUser.Location location = new HRUser.Location();
+            String[] address = parts[1].trim().split(",");
+            HRUser.Street street = new HRUser.Street();
+            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
+            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
+            location.setStreet(street);
+            location.setCity(address[1].trim());
+            location.setState(address[2].trim());
+            location.setPostcode(address[3].trim());
+            location.setCountry(address[4].trim());
+            user.setLocation(location);
             users.add(user);
         }
         u = userList6.lines().toList();
@@ -86,6 +141,17 @@ public class DummyHrService {
             name.setTitle(parts[5].trim());
             user.setName(name);
             user.setEmail(parts[2].trim());
+            HRUser.Location location = new HRUser.Location();
+            String[] address = parts[1].trim().split(",");
+            HRUser.Street street = new HRUser.Street();
+            street.setNumber(Integer.parseInt(address[0].trim().split(" ")[0].trim()));
+            street.setName(address[0].trim().substring(address[0].trim().indexOf(" ")).trim());
+            location.setStreet(street);
+            location.setCity(address[1].trim());
+            location.setState(address[2].trim());
+            location.setPostcode(address[3].trim());
+            location.setCountry(address[4].trim());
+            user.setLocation(location);
             users.add(user);
         }
     }
