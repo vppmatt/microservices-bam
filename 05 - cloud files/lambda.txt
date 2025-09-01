@@ -1,0 +1,45 @@
+import https from 'https';
+import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+
+const putObject = (bucket, key, body, contentType) => {
+  const client = new S3Client();
+
+  const putCommand = new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: body,
+      ContentType: contentType
+  })
+  return client.send(putCommand)
+}
+
+export const handler = async (event) => {
+  
+  const url = 'https://bam-building.rtamzm5hrwhyj.eu-west-1.cs.amazonlightsail.com/api/location';
+
+  const S3_BUCKET = 'matt-t';
+  const S3_FILE = 'location-data.json';  
+
+  const data = await new Promise((resolve, reject) => {
+        https.get(url, (res) => {
+            let body = '';
+            res.on('data', chunk => body += chunk);
+            res.on('end', () => resolve(body));
+        }).on('error', reject);
+    });
+
+    console.log("data", data);
+
+  const result = await new Promise((resolve, reject) => {
+    putObject(S3_BUCKET, S3_FILE, data, 'application/json');
+  });
+
+  console.log("result", result);
+
+
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify(`${result} then Data saved to s3 bucket ${S3_BUCKET}:${S3_FILE}`),
+  };
+  return response;
+};
