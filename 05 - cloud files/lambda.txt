@@ -30,9 +30,7 @@ export const handler = async (event) => {
 
     console.log("data", data);
 
-  const result = await new Promise((resolve, reject) => {
-    putObject(S3_BUCKET, S3_FILE, data, 'application/json');
-  });
+  const result = await putObject(S3_BUCKET, S3_FILE, data, 'application/json');
 
   console.log("result", result);
 
