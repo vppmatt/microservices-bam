@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bam-apigateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bam-apigateway
+  template:
+    metadata:
+      labels:
+        app: bam-apigateway
+    spec:
+      containers:
+        - name: bam-apigateway
+          image: localhost:32000/bam-apigateway:1.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bam-apigateway
+spec:
+  selector:
+    app: bam-apigateway
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP

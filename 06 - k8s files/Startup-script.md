@@ -78,14 +78,23 @@ and/or
 kubectl logs -f deploy/bam-db
 ```
 
-****TO HERE****
-
 ## Step 4 - build and run the messaging server
 ```
 cd ..
 cd activeMQ/
 docker build -t localhost:32000/bam-activemq:1.0 .
-docker push
+docker push localhost:32000/bam-activemq:1.0
+kubectl apply -f deploy.yaml
+```
+
+
+Wait for the pod to become ready / watch the logs:
+```
+watch microk8s kubectl get po
+```
+and/or
+```
+kubectl logs -f deploy/bam-activemq
 ```
 
 ## Step 5 - build and run the api gateway
@@ -94,8 +103,9 @@ cd ..
 cd apigateway/
 chmod a+x mvnw
 ./mvnw package
-docker build -t bam-apigateway:1.0 .
-docker run -d --name bam-apigateway -p8081:8080  --network bam bam-apigateway:1.0
+docker build -t localhost:32000/bam-apigateway:1.0 .
+docker push localhost:32000/bam-apigateway:1.0
+kubectl apply -f deploy.yaml
 ```
 
 ## Step 6 - build and run the user manager
