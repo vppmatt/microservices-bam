@@ -44,9 +44,10 @@ EOF
 sudo systemctl restart docker
 ```
 
-Enable Ingress
+Enable Ingress and loadbalancing
 ```
 microk8s enable ingress
+microk8s enable metallb:10.64.140.43-10.64.140.49
 ```
 
 

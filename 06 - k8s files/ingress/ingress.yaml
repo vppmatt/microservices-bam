@@ -1,10 +1,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: bam-apigateway
+  name: bam-ingress
 spec:
   rules:
-  - host: localhost
+  - host: apigateway.localhost
     http:
       paths:
       - path: /
@@ -14,14 +14,7 @@ spec:
             name: bam-apigateway
             port:
               number: 8080
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: bam-ui
-spec:
-  rules:
-  - host: localhost
+  - host: ui.localhost
     http:
       paths:
       - path: /
@@ -30,4 +23,4 @@ spec:
           service:
             name: bam-ui
             port:
-              number: 80              
+              number: 80
