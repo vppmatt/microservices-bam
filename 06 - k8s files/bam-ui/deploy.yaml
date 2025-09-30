@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: bam-ui
-          image: ${ECR_IMAGE_ROOT}/${IMAGE_NAME}:${BUILD_ID}
+          image: localhost:32000/bam-ui:1.0
 ---
 apiVersion: v1
 kind: Service

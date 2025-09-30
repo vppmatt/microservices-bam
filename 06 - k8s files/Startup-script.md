@@ -116,9 +116,13 @@ kubectl apply -f deploy.yaml
 
 Because this needs to be visible outside the cluster we can first port forward and then test it with:
 ```
-kubectl port-forward svc/bam-apigateway 8100:8080
+kubectl port-forward svc/bam-apigateway 8100:8080 --address 0.0.0.0 &
 curl -i localhost:8100/healthz
 ```
+
+Now you can visit the url in your browser (http://your-server-name:8100/healthz)
+
+Note: this sets port forwarding to work in the background. To stop it, run the command `jobs` to get the id of the job and then `fg 1` for job number 1 to bring it into the foreground. You can then press ctrl+c to stop the job running. 
 
 ## Step 6 - build and run the user manager
 ```
@@ -165,10 +169,15 @@ docker push localhost:32000/bam-ui:1.0
 kubectl apply -f deploy.yaml
 ```
 
-Because this is exposed outside the cluster we can test it with:
+Because this needs to be visible outside the cluster we can first port forward and then test it with:
 ```
-curl -i localhost:30081
+kubectl port-forward svc/bam-ui 8081:80 --address 0.0.0.0 &
+curl -i localhost:8081
 ```
+
+Now you can visit the url in your browser (http://your-server-name:80/healthz)
+
+Note: this sets port forwarding to work in the background. To stop it, run the command `jobs` to get the id of the job and then `fg 1` for job number 1 to bring it into the foreground. You can then press ctrl+c to stop the job running. 
 
 ## Step 9 - expose the UI and Api Gateway
 
