@@ -21,10 +21,10 @@ kind: Service
 metadata:
   name: bam-apigateway
 spec:
-  type: LoadBalancer
   selector:
     app: bam-apigateway
   ports:
-    - port: 8100        
-      targetPort: 8080  
-      protocol: TCP
+  - name: http
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP

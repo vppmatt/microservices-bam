@@ -14,17 +14,17 @@ spec:
     spec:
       containers:
         - name: bam-ui
-          image: localhost:32000/bam-ui:1.0
+          image: ${ECR_IMAGE_ROOT}/${IMAGE_NAME}:${BUILD_ID}
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: bam-ui
 spec:
-  type: LoadBalancer
   selector:
     app: bam-ui
   ports:
-    - port: 3000       
-      targetPort: 80   
-      protocol: TCP
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP

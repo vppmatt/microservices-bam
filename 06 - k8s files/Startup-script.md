@@ -114,9 +114,10 @@ docker push localhost:32000/bam-apigateway:1.0
 kubectl apply -f deploy.yaml
 ```
 
-Because this is exposed outside the cluster we can test it with:
+Because this needs to be visible outside the cluster we can first port forward and then test it with:
 ```
-curl -i localhost:30080/healthz
+kubectl port-forward svc/bam-apigateway 8100:8080
+curl -i localhost:8100/healthz
 ```
 
 ## Step 6 - build and run the user manager
