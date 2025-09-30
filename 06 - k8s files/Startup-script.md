@@ -162,6 +162,7 @@ grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:808
 ```
 
 Now we can continue the build process:
+
 ```
 npm run build
 docker build -t localhost:32000/bam-ui:1.0  .
@@ -175,19 +176,7 @@ kubectl port-forward svc/bam-ui 8081:80 --address 0.0.0.0 &
 curl -i localhost:8081
 ```
 
-Now you can visit the url in your browser (http://your-server-name:80/healthz)
+Now you can visit the url in your browser (http://your-server-name:8081/healthz)
 
 Note: this sets port forwarding to work in the background. To stop it, run the command `jobs` to get the id of the job and then `fg 1` for job number 1 to bring it into the foreground. You can then press ctrl+c to stop the job running. 
 
-## Step 9 - expose the UI and Api Gateway
-
-```
-cd ..
-cd ingress
-kubectl apply -f ingress.yaml
-```
-
-## Step 10 - test
-Visit the url - we have exposed port 8100, so if your server is server1.neueda.com, then visit:
-
-http://server1.neueda.com:8100
