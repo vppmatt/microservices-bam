@@ -44,6 +44,11 @@ EOF
 sudo systemctl restart docker
 ```
 
+Enable Ingress
+```
+microk8s enable ingress
+```
+
 
 ## Step 2 - clone the repo
 ```
@@ -108,6 +113,11 @@ docker push localhost:32000/bam-apigateway:1.0
 kubectl apply -f deploy.yaml
 ```
 
+Because this is exposed outside the cluster we can test it with:
+```
+curl -i localhost:30080/healthz
+```
+
 ## Step 6 - build and run the user manager
 ```
 cd ..
@@ -139,16 +149,31 @@ nvm install node
 npm install
 ```
 
-Next we need to edit the files in the `src/data` folder to set the URL of the api gateway. For example if your linux server is called server1.neueda.com, set this line in each of the files:
+Next we need to edit the files in the `src/data` folder to set the URL of the api gateway.
 
-`const serverUrl = "http://server1.neueda.com:8081"`
+```
+grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:8080#http://$(curl -s ifconfig.me):8100#g"
+```
 
-Then we can continue the process:
+Now we can continue the build process:
 ```
 npm run build
 docker build -t localhost:32000/bam-ui:1.0  .
 docker push localhost:32000/bam-ui:1.0
 kubectl apply -f deploy.yaml
+```
+
+Because this is exposed outside the cluster we can test it with:
+```
+curl -i localhost:30081
+```
+
+## Step 9 - expose the UI and Api Gateway
+
+```
+cd ..
+cd ingress
+kubectl apply -f ingress.yaml
 ```
 
 ## Step 10 - test
