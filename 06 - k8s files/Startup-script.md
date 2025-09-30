@@ -2,15 +2,11 @@
 
 ## Step 1 - Install and configure Kubernetes:
 
-First make yourself a super-user
-```
-sudo su
-```
 
 Install Snap
 ```
-wget -O /etc/yum.repos.d/snapd.repo https://bboozzoo.github.io/snapd-amazon-linux/al2023/snapd.repo
-dnf install snapd -y
+sudo wget -O /etc/yum.repos.d/snapd.repo https://bboozzoo.github.io/snapd-amazon-linux/al2023/snapd.repo
+sudo dnf install snapd -y
 ```
 
 Install microk8s
@@ -18,17 +14,22 @@ Install microk8s
 ```
 sudo snap install microk8s --classic --channel=1.33
 ```
+*Note - if you get a message saying "error: too early for operation, device not yet seeded or device model not acknowledged", wait a few seconds and try again.*
 
 Configure Kubernetes
 ```
-usermod -a -G microk8s $USER
+sudo usermod -a -G microk8s $USER
 mkdir -p ~/.kube
 chmod 0700 ~/.kube
 su - $USER
+```
+you might be asked to enter the login password at this point.
+```
 microk8s status --wait-ready
 
 microk8s kubectl get nodes
-alias kubectl='microk8s kubectl'
+
+echo "alias kubectl='microk8s kubectl'" >> ~/.bashrc && source ~/.bashrc
 ```
 
 
@@ -40,14 +41,14 @@ tee /etc/docker/daemon.json > /dev/null <<EOF
   "insecure-registries" : ["localhost:32000"]
 }
 EOF
-systemctl restart docker
+sudo systemctl restart docker
 ```
 
 
 ## Step 2 - clone the repo
 ```
 git clone https://github.com/vppmatt/microservices-bam.git
-cd 06\ -\ k8s\ files/
+cd microservices-bam/06\ -\ k8s\ files/
 ```
 
 ## Step 3 - build and run the database
@@ -68,13 +69,13 @@ Deploy the application
 kubectl apply -f deploy.yaml
 ```
 
-Watch the logs / wait for the pod to become ready:
+Wait for the pod to become ready / watch the logs:
 ```
-kubectl logs -f deploy/bam-db
+watch microk8s kubectl get po
 ```
 and/or
 ```
-watch kubectl get po
+kubectl logs -f deploy/bam-db
 ```
 
 ****TO HERE****
@@ -83,8 +84,8 @@ watch kubectl get po
 ```
 cd ..
 cd activeMQ/
-docker build -t bam-activemq:1.0 .
-docker run -d --name bam-activemq --network bam bam-activemq:1.0
+docker build -t localhost:32000/bam-activemq:1.0 .
+docker push
 ```
 
 ## Step 5 - build and run the api gateway

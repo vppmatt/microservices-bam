@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bam-activemq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bam-activemq
+  template:
+    metadata:
+      labels:
+        app: bam-activemq
+    spec:
+      containers:
+        - name: bam-activemq
+          image: localhost:32000/bam-activemq:1.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bam-activemq
+spec:
+  selector:
+    app: bam-activemq
+  ports:
+    - name: http
+      port: 61616
+      targetPort: 61616
+  type: ClusterIP
