@@ -114,8 +114,9 @@ cd ..
 cd usermanager
 chmod a+x mvnw
 ./mvnw package
-docker build -t bam-user:1.0 --build-arg DBPASSWORD=n3u3da! .
-docker run -d --name bam-user --network bam bam-user:1.0
+docker build -t localhost:32000/bam-user:1.0 --build-arg DBPASSWORD=pass123! .
+docker push localhost:32000/bam-user:1.0 
+kubectl apply -f deploy.yaml
 ```
 
 ## Step 7 - build and run the building manager
@@ -124,24 +125,16 @@ cd ..
 cd buildingmanager
 chmod a+x mvnw
 ./mvnw package
-docker build -t bam-building:1.0 --build-arg DBPASSWORD=n3u3da! .
-docker run -d --name bam-building --network bam bam-building:1.0
+docker build -t localhost:32000/bam-building:1.0 --build-arg DBPASSWORD=pass123! .
+docker push localhost:32000/bam-building:1.0 
+kubectl apply -f deploy.yaml
 ```
 
-# Step 8 - build and run the access control server
-```
-cd ..
-cd accesscontrol
-chmod a+x mvnw
-./mvnw package
-docker build -t bam-access:1.0 --build-arg DBPASSWORD=n3u3da! .
-docker run -d --name bam-access --network bam bam-access:1.0
-```
-
-# Step 9 - build and run the front end
+# Step 8 - build and run the front end
 
 ```
 cd ..
+cd bam-ui
 nvm install node
 npm install
 ```
@@ -153,8 +146,9 @@ Next we need to edit the files in the `src/data` folder to set the URL of the ap
 Then we can continue the process:
 ```
 npm run build
-docker build -t bam-ui:1.0  .
-docker run -d --name bam-ui --network bam -p8100:80 bam-ui:1.0
+docker build -t localhost:32000/bam-ui:1.0  .
+docker push localhost:32000/bam-ui:1.0
+kubectl apply -f deploy.yaml
 ```
 
 ## Step 10 - test
