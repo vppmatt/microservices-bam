@@ -1,0 +1,3 @@
+CREATE DATABASE IF NOT EXISTS `buildingmanager`;
+CREATE DATABASE IF NOT EXISTS `accesscontrol`;
+CREATE DATABASE IF NOT EXISTS `usermanager`;

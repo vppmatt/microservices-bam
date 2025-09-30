@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-storage-1         #any random name, not referenced anywhere
+spec:
+  storageClassName: mylocalstorage      #our label for the storage type. Can be re-used. Idea is whether this is expensive fast storage (ssd) or slow cheaper storage (hard drive)
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce                     #required – means only 1 pod can connect. This is all that is supported by AWS EBS
+  hostPath:
+    path: /var/local/mysqldata
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-pvc
+spec:
+  storageClassName: mylocalstorage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bam-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bam-db
+  template:
+    metadata:
+      labels:
+        app: bam-db
+    spec:
+      volumes:
+        - name: bam-db-persistent-storage
+          persistentVolumeClaim:
+            claimName: db-pvc
+      containers:
+        - name: bam-db
+          image: localhost:32000/bam-db:1.0
+          volumeMounts:
+            - name: bam-db-persistent-storage
+              mountPath: /var/lib/mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bam-db
+spec:
+  selector:
+    app: bam-db
+  ports:
+    - name: http
+      port: 3306
+      targetPort: 3306
+  type: ClusterIP
