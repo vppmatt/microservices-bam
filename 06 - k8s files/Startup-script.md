@@ -23,7 +23,9 @@ mkdir -p ~/.kube
 chmod 0700 ~/.kube
 su - $USER
 ```
-you might be asked to enter the login password at this point.
+*Note - you might be asked to enter the login password at this point.*
+
+Wait for Kubernetes to become ready and then set up the kubectl command
 ```
 microk8s status --wait-ready
 
@@ -31,6 +33,8 @@ microk8s kubectl get nodes
 
 echo "alias kubectl='microk8s kubectl'" >> ~/.bashrc && source ~/.bashrc
 ```
+
+*Note - if you get a warning saying that permission was denied on file /etc/docker/daemon.json this can be ignored*
 
 
 Enable the local registry
@@ -117,6 +121,8 @@ kubectl apply -f deploy.yaml
 Because this needs to be visible outside the cluster we can first port forward and then test it with:
 ```
 kubectl port-forward svc/bam-apigateway 8100:8080 --address 0.0.0.0 &
+```
+```
 curl -i localhost:8100/healthz
 ```
 
@@ -146,7 +152,7 @@ docker push localhost:32000/bam-building:1.0
 kubectl apply -f deploy.yaml
 ```
 
-# Step 8 - build and run the front end
+## Step 8 - build and run the front end
 
 ```
 cd ..
@@ -176,7 +182,7 @@ kubectl port-forward svc/bam-ui 8081:80 --address 0.0.0.0 &
 curl -i localhost:8081
 ```
 
-Now you can visit the url in your browser (http://your-server-name:8081/healthz)
+Now you can visit the url in your browser (http://your-server-name:8081)
 
 Note: this sets port forwarding to work in the background. To stop it, run the command `jobs` to get the id of the job and then `fg 1` for job number 1 to bring it into the foreground. You can then press ctrl+c to stop the job running. 
 

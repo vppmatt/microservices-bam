@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+    environment {
+            GIT_URL = "https://github.com/vppmatt/microservices-bam.git"
+            K8S_CONTROL_PLANE = "localhost:32000"
+            IMAGE_NAME = "bam-building"
+            BUILD_ARG = "--build-arg DBPASSWORD=${DBPASSWORD}"
+        }
+    stages {
+        stage('GetFromGithub') {
+            steps {
+                git branch: 'main', url: GIT_URL
+            }
+        }
+        stage('Ensure Maven is runnable') {
+            steps {
+                sh 'chmod a+x mvnw'
+            }
+        }
+        stage('Maven Unit tests') {
+            steps {
+                sh './mvnw test'
+            }
+        }
+        stage('Maven build') {
+            steps {
+                sh './mvnw clean package'
+            }
+        }
+
+        stage('Docker image build') {
+            steps {
+                sh 'docker image build -t ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID} ${BUILD_ARG}.'
+            }
+        }
+
+        stage('Load docker image into k8s cluster') {
+            steps {
+                sh 'docker push ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}'
+            }
+        }
+
+        stage('Update k8s deployment to the new version') {
+            steps {
+                sh 'microk8s kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${IMAGE_NAME}:${BUILD_ID}'
+            }
+        }
+
+    }
+    
+}
