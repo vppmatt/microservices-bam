@@ -1,0 +1,1 @@
+copy the 2 startup scripts to the home folder (above the cloned repo) and then run 1 afte r the other)

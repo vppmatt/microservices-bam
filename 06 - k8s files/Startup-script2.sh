@@ -13,8 +13,6 @@ EOF
 sudo systemctl restart docker
 
 
-
-git clone https://github.com/vppmatt/microservices-bam.git
 cd microservices-bam/06\ -\ k8s\ files/
 
 cd database
