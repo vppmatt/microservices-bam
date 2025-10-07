@@ -48,7 +48,7 @@ public class BootstrapService {
         System.out.println("setup stage - udpate locations completed");
     }
 
-    //@PostConstruct
+    @PostConstruct
     public void updateUsers() {
         System.out.println("setup stage - udpate users starting");
         try {
