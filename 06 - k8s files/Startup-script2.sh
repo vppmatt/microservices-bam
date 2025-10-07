@@ -70,7 +70,7 @@ docker build -t localhost:32000/bam-ui:1.0  .
 docker push localhost:32000/bam-ui:1.0
 microk8s kubectl apply -f deploy.yaml
 
-kubectl port-forward svc/bam-ui 8081:80 --address 0.0.0.0 &
-kubectl port-forward svc/bam-apigateway 8100:8080 --address 0.0.0.0 &
+microk8s kubectl port-forward svc/bam-ui 8081:80 --address 0.0.0.0 &
+microk8s kubectl port-forward svc/bam-apigateway 8100:8080 --address 0.0.0.0 &
 
 echo "Setup complete"
