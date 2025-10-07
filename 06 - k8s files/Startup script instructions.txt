@@ -1,1 +1,5 @@
-copy the 2 startup scripts to the home folder (above the cloned repo) and then run 1 afte r the other)
+copy the 2 startup scripts to the home folder (above the cloned repo) 
+make them runnable
+run the first script - it will ask for the password when it finishes
+if it gives an error "error: too early for operation, device not yet seeded or device model not acknowledged" run it again
+then run the second script.
