@@ -1,4 +1,4 @@
-# Set up a Jenkins pipeline
+# Set up a Jenkins CI pipeline
 
 ## Step 1 -Log onto Jenkins
 
@@ -33,8 +33,6 @@ We don't want to store passwords in our files so we'll safely store this in Jenk
 
 ## Step 4 - run the pipeline
 
-NOTE - before starting the pipeline, you may wish to run `watch microk8s kubectl get po` to see the new container being deployed
-
 1. Click on the Build now button on the left menu
 
 Then to watch the logs:
@@ -42,3 +40,14 @@ Then to watch the logs:
 2. Click on the timestamp for the build id in the builds window below the left menu
 3. Click on console output from the left menu
 
+## Step 5 - deploy the change
+
+NOTE - before starting this section you may wish to run `watch microk8s kubectl get po` to see the new container being deployed
+
+### get the tag number for the latest image for bam building
+
+`docker image ls`
+
+### implement the changed image:
+
+`microk8s kubectl set image deployment/bam-building bam-building=bam-building:3`

@@ -49,11 +49,12 @@ pipeline {
             }
         }
 
-        stage('Update k8s deployment to the new version') {
-            steps {
-                sh '/var/lib/snapd/snap/bin/microk8s kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${IMAGE_NAME}:${BUILD_ID}'
-            }
-        }
+        // This stage is commented out because the deployment will be managed manually (CI vs CD)
+        // stage('Update k8s deployment to the new version') {
+        //     steps {
+        //         sh '/var/lib/snapd/snap/bin/microk8s kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${IMAGE_NAME}:${BUILD_ID}'
+        //     }
+        // }
 
     }
     
