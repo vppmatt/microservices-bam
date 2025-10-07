@@ -33,4 +33,18 @@ TMP_DIRS=("/tmp" "/var/tmp" "/dev/shm")
 for dir in "${TMP_DIRS[@]}"; do
   if [ -d "$dir" ]; then
     echo "  Cleaning $dir ..."
-    find "$dir"
+    find "$dir" -mindepth 1 -exec rm -rf {} + 2>/dev/null || true
+  fi
+done
+
+echo ""
+echo ">>> Cleaning /var/log ..."
+if [ -d "/var/log" ]; then
+  find /var/log -type f -exec rm -f {} +
+  echo "  All log files removed from /var/log"
+else
+  echo "  /var/log directory not found (skipped)"
+fi
+
+echo ""
+echo "Cleanup complete!"
