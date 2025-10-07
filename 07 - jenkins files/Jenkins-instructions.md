@@ -34,4 +34,7 @@ We don't want to store passwords in our files so we'll safely store this in Jenk
 ## Step 4 - run the pipeline
 
 1. Click on the Build now button on the left menu
-2. To watch the logs, 
+
+To watch the logs:
+1. Click on the timestamp for the build id in the builds window below the left menu
+2. Click on console output from the left menu
