@@ -51,7 +51,7 @@ pipeline {
 
         stage('Update k8s deployment to the new version') {
             steps {
-                sh 'microk8s kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${IMAGE_NAME}:${BUILD_ID}'
+                sh '/var/lib/snapd/snap/bin/microk8s kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${IMAGE_NAME}:${BUILD_ID}'
             }
         }
 
