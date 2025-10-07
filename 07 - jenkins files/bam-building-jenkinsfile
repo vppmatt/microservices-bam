@@ -14,24 +14,31 @@ pipeline {
         }
         stage('Ensure Maven is runnable') {
             steps {
-                sh 'cd "06 - k8s files/buildingmanager/" '
-                sh 'chmod a+x mvnw'
+                dir ('06 - k8s files/buildingmanager/') {
+                    sh 'chmod a+x mvnw'
+                }
             }
         }
         stage('Maven Unit tests') {
             steps {
-                sh './mvnw test'
+                dir ('06 - k8s files/buildingmanager/') {
+                    sh './mvnw test'
+                }
             }
         }
         stage('Maven build') {
             steps {
-                sh './mvnw clean package'
+                dir ('06 - k8s files/buildingmanager/') {
+                    sh './mvnw clean package'
+                }
             }
         }
 
         stage('Docker image build') {
             steps {
-                sh 'docker image build -t ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID} ${BUILD_ARG}.'
+                dir ('06 - k8s files/buildingmanager/') {
+                    sh 'docker image build -t ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID} ${BUILD_ARG}.'
+                }
             }
         }
 
