@@ -17,11 +17,12 @@ pipeline {
                         returnStdout: true
                     ).trim()
                     
-                    env.K8S_CONTROL_PLANE = "${host}:5001"
-                    env.BUILD_ARG2 = "--build-arg DBHOSTNAME=${host}"
+                    env['K8S_CONTROL_PLANE']  = "${host}:5001"
+                    env['BUILD_ARG2'] = "--build-arg DBHOSTNAME=${host}"
                 }
-                sh 'echo "K8S_CONTROL_PLANE=$K8S_CONTROL_PLANE"'
-                sh 'echo "BUILD_ARG2=$BUILD_ARG2"'
+                sh 'echo "K8S_CONTROL_PLANE=${K8S_CONTROL_PLANE}"'
+                sh 'echo "BUILD_ARG1=${BUILD_ARG1}"'
+                sh 'echo "BUILD_ARG2=${BUILD_ARG2}"'
             }
         }
 
