@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: bam-building
-          image: localhost:32000/bam-building:1.0
+          image: localhost:5001/bam-building:1.0
           startupProbe:
             httpGet:
               path: /healthz

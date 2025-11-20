@@ -42,7 +42,7 @@ Then to watch the logs:
 
 ## Step 5 - deploy the change
 
-NOTE - before starting this section you may wish to run `watch microk8s kubectl get po` to see the new container being deployed
+NOTE - before starting this section you may wish to run `watch kubectl get po` to see the new container being deployed
 
 ### get the tag number for the latest image for bam building
 
@@ -50,4 +50,4 @@ NOTE - before starting this section you may wish to run `watch microk8s kubectl 
 
 ### implement the changed image:
 
-`microk8s kubectl set image deployment/bam-building bam-building=bam-building:3`
+`kubectl set image deployment/bam-building bam-building=bam-building:3`

@@ -44,7 +44,7 @@ spec:
             claimName: db-pvc
       containers:
         - name: bam-db
-          image: localhost:32000/bam-db:1.0
+          image: localhost:5001/bam-db:1.0
           volumeMounts:
             - name: bam-db-persistent-storage
               mountPath: /var/lib/mysql

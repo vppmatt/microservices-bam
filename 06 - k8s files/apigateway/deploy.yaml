@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: bam-apigateway
-          image: localhost:32000/bam-apigateway:1.0
+          image: localhost:5001/bam-apigateway:1.0
 ---
 apiVersion: v1
 kind: Service

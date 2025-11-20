@@ -3,52 +3,60 @@
 ## Step 1 - Install and configure Kubernetes:
 
 
-Install Snap
 ```
-git clone https://github.com/albuild/snap.git
-cd snap
-bin/build
-bin/cp
-cd ~
-```
+#install Kubernetes (Kind)
+[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.30.0/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
 
-Install microk8s
+#install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 
-```
-sudo snap install microk8s --classic --channel=1.33
-```
-*Note - if you get a message saying "error: too early for operation, device not yet seeded or device model not acknowledged", wait a few seconds and try again.*
-
-Configure Kubernetes
-```
-sudo usermod -a -G microk8s $USER
-mkdir -p ~/.kube
-chmod 0700 ~/.kube
-su - $USER
-```
-*Note - you might be asked to enter the login password at this point.*
-
-Wait for Kubernetes to become ready and then set up the kubectl command
-```
-microk8s status --wait-ready
-
-microk8s kubectl get nodes
-
-echo "alias kubectl='microk8s kubectl'" >> ~/.bashrc && source ~/.bashrc
-```
-
-*Note - if you get a warning saying that permission was denied on file /etc/docker/daemon.json this can be ignored*
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 
-Enable the local registry
-```
-microk8s enable registry
-tee /etc/docker/daemon.json > /dev/null <<EOF
-{
-  "insecure-registries" : ["localhost:32000"]
-}
+#set up a local registry
+docker run -d --restart=always -p 127.0.0.1:5001:5000 --network bridge --name kind-registry registry:2
+
+#create the cluster
+kind create cluster
+
+cat <<EOF | kind create cluster --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+containerdConfigPatches:
+- |-
+  [plugins."io.containerd.grpc.v1.cri".registry]
+    config_path = "/etc/containerd/certs.d"
 EOF
-sudo systemctl restart docker
+
+#Add the registry config to the nodes
+
+REGISTRY_DIR="/etc/containerd/certs.d/localhost:${reg_port}"
+for node in $(kind get nodes); do
+  docker exec "${node}" mkdir -p "${REGISTRY_DIR}"
+  cat <<EOF | docker exec -i "${node}" cp /dev/stdin "${REGISTRY_DIR}/hosts.toml"
+[host."http://${reg_name}:5000"]
+EOF
+done
+
+# Connect the registry to the cluster network if not already connected
+if [ "$(docker inspect -f='{{json .NetworkSettings.Networks.kind}}' kind-registry)" = 'null' ]; then
+  docker network connect "kind" kind-registry
+fi
+
+# Document the local registry
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: local-registry-hosting
+  namespace: kube-public
+data:
+  localRegistryHosting.v1: |
+    host: "localhost:${reg_port}"
+    help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
+EOF
 ```
 
 ## Step 2 - clone the repo
@@ -62,12 +70,12 @@ cd microservices-bam/06\ -\ k8s\ files/
 Navigate into the folder and build the docker image
 ```
 cd database
-docker build -t localhost:32000/bam-db:1.0 --build-arg DBPASSWORD=pass123! .
+docker build -t localhost:5001/bam-db:1.0 --build-arg DBPASSWORD=pass123! .
 ```
 
 Push the docker image to the Kubernetes repository
 ```
-docker push localhost:32000/bam-db:1.0
+docker push localhost:5001/bam-db:1.0
 ```
 
 Deploy the application
@@ -77,7 +85,7 @@ kubectl apply -f deploy.yaml
 
 Wait for the pod to become ready / watch the logs:
 ```
-watch microk8s kubectl get po
+watch kubectl get po
 ```
 and/or
 ```
@@ -88,15 +96,15 @@ kubectl logs -f deploy/bam-db
 ```
 cd ..
 cd activeMQ/
-docker build -t localhost:32000/bam-activemq:1.0 .
-docker push localhost:32000/bam-activemq:1.0
+docker build -t localhost:5001/bam-activemq:1.0 .
+docker push localhost:5001/bam-activemq:1.0
 kubectl apply -f deploy.yaml
 ```
 
 
 Wait for the pod to become ready / watch the logs:
 ```
-watch microk8s kubectl get po
+watch kubectl get po
 ```
 and/or
 ```
@@ -109,8 +117,8 @@ cd ..
 cd apigateway/
 chmod a+x mvnw
 ./mvnw package
-docker build -t localhost:32000/bam-apigateway:1.0 .
-docker push localhost:32000/bam-apigateway:1.0
+docker build -t localhost:5001/bam-apigateway:1.0 .
+docker push localhost:5001/bam-apigateway:1.0
 kubectl apply -f deploy.yaml
 ```
 
@@ -132,8 +140,8 @@ cd ..
 cd usermanager
 chmod a+x mvnw
 ./mvnw package
-docker build -t localhost:32000/bam-user:1.0 --build-arg DBPASSWORD=pass123! .
-docker push localhost:32000/bam-user:1.0 
+docker build -t localhost:5001/bam-user:1.0 --build-arg DBPASSWORD=pass123! .
+docker push localhost:5001/bam-user:1.0 
 kubectl apply -f deploy.yaml
 ```
 
@@ -143,8 +151,8 @@ cd ..
 cd buildingmanager
 chmod a+x mvnw
 ./mvnw package
-docker build -t localhost:32000/bam-building:1.0 --build-arg DBPASSWORD=pass123! .
-docker push localhost:32000/bam-building:1.0 
+docker build -t localhost:5001/bam-building:1.0 --build-arg DBPASSWORD=pass123! .
+docker push localhost:5001/bam-building:1.0 
 kubectl apply -f deploy.yaml
 ```
 
@@ -154,8 +162,8 @@ cd ..
 cd accesscontrol
 chmod a+x mvnw
 ./mvnw package
-docker build -t localhost:32000/bam-access:1.0 --build-arg DBPASSWORD=pass123! .
-docker push localhost:32000/bam-access:1.0 
+docker build -t localhost:5001/bam-access:1.0 --build-arg DBPASSWORD=pass123! .
+docker push localhost:5001/bam-access:1.0 
 kubectl apply -f deploy.yaml
 ```
 
@@ -178,8 +186,8 @@ Now we can continue the build process:
 
 ```
 npm run build
-docker build -t localhost:32000/bam-ui:1.0  .
-docker push localhost:32000/bam-ui:1.0
+docker build -t localhost:5001/bam-ui:1.0  .
+docker push localhost:5001/bam-ui:1.0
 kubectl apply -f deploy.yaml
 ```
 
