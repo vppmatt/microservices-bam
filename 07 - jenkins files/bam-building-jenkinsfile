@@ -2,35 +2,18 @@ pipeline {
     agent any
     environment {
             GIT_URL = "https://github.com/vppmatt/microservices-bam.git"
-            K8S_CONTROL_PLANE = ""
             IMAGE_NAME = "bam-building"
             DBPASSWORD = credentials('DBPASSWORD')
-            BUILD_ARG1 = "--build-arg DBPASSWORD=${DBPASSWORD}"
-            BUILD_ARG2 = ""
         }
+
     stages {
-        stage('Set vars') {
-            steps {
-                script {
-                    def host = sh(
-                        script: "hostname",
-                        returnStdout: true
-                    ).trim()
-                    
-                    env['K8S_CONTROL_PLANE']  = "${host}:5001"
-                    env['BUILD_ARG2'] = "--build-arg DBHOSTNAME=${host}"
-                }
-                sh 'echo "K8S_CONTROL_PLANE=${K8S_CONTROL_PLANE}"'
-                sh 'echo "BUILD_ARG1=${BUILD_ARG1}"'
-                sh 'echo "BUILD_ARG2=${BUILD_ARG2}"'
-            }
-        }
 
         stage('GetFromGithub') {
             steps {
                 git branch: 'main', url: GIT_URL
             }
         }
+
         stage('Ensure Maven is runnable') {
             steps {
                 dir ('06 - k8s files/buildingmanager/') {
@@ -38,6 +21,7 @@ pipeline {
                 }
             }
         }
+
         stage('Maven Unit tests') {
             steps {
                 dir ('06 - k8s files/buildingmanager/') {
@@ -45,6 +29,7 @@ pipeline {
                 }
             }
         }
+
         stage('Maven build') {
             steps {
                 dir ('06 - k8s files/buildingmanager/') {
@@ -55,25 +40,68 @@ pipeline {
 
         stage('Docker image build') {
             steps {
-                dir ('06 - k8s files/buildingmanager/') {
-                    sh 'docker image build -t ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID} ${BUILD_ARG1} ${BUILD_ARG2} .'
+                script {
+                    def host = sh(
+                        script: 'hostname',
+                        returnStdout: true
+                    ).trim()
+
+                    def k8sControlPlane = "${host}:5001"
+                    def buildArg1       = "--build-arg DBPASSWORD=${env.DBPASSWORD}"
+                    def buildArg2       = "--build-arg DBHOSTNAME=${host}"
+
+                    withEnv([
+                        "K8S_CONTROL_PLANE=${k8sControlPlane}",
+                        "BUILD_ARG1=${buildArg1}",
+                        "BUILD_ARG2=${buildArg2}"
+                    ]) {
+                        // debug – shell sees these
+                        sh 'echo "K8S_CONTROL_PLANE=$K8S_CONTROL_PLANE"'
+                        sh 'echo "BUILD_ARG1=$BUILD_ARG1"'
+                        sh 'echo "BUILD_ARG2=$BUILD_ARG2"'
+
+                        dir('06 - k8s files/buildingmanager/') {
+                            sh 'docker image build -t ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID} ${BUILD_ARG1} ${BUILD_ARG2} .'
+                        }
+                    }
                 }
             }
         }
 
         stage('Load docker image into k8s cluster') {
             steps {
-                sh 'docker push ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}'
+                script {
+                    def host = sh(
+                        script: 'hostname',
+                        returnStdout: true
+                    ).trim()
+                    def k8sControlPlane = "${host}:5001"
+
+                    withEnv(["K8S_CONTROL_PLANE=${k8sControlPlane}"]) {
+                        sh 'echo "Pushing ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}"'
+                        sh 'docker push ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}'
+                    }
+                }
             }
         }
 
         // This stage should be commented out if the deployment will be managed manually (CI vs CD)
         stage('Update k8s deployment to the new version') {
              steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                 sh 'kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}'
-                 }
-             }
+                script {
+                    def host = sh(
+                        script: 'hostname',
+                        returnStdout: true
+                    ).trim()
+                    def k8sControlPlane = "${host}:5001"
+
+                    withEnv(["K8S_CONTROL_PLANE=${k8sControlPlane}"]) {
+                        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                            sh 'kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}'
+                        }
+                    }
+                }
+            }
          }
 
     }
