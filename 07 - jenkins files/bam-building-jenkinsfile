@@ -53,7 +53,9 @@ pipeline {
         // This stage should be commented out if the deployment will be managed manually (CI vs CD)
         stage('Update k8s deployment to the new version') {
              steps {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                  sh 'kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${IMAGE_NAME}:${BUILD_ID}'
+                 }
              }
          }
 

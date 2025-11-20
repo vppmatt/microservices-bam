@@ -19,7 +19,20 @@ We don't want to store passwords in our files so we'll safely store this in Jenk
 8. Set the id to "DBPASSWORD"
 9. Click on the "Create" button
 
-## Step 3 - create a pipeline
+## Step 3 - configure kubernetes in Jenkins
+
+1. run the command cat ~/.kube/config
+2. copy and paste the output and save it as a local file called kubeconfig.txt
+3. Click on the "manage Jenkins" cog icon at the top right of the screen
+4. In the "Security" section click on "Configure credentials"
+5. Click on "(global)" in the domains column
+6. Click on the "+ Add Credentials" button
+7. Set the Kind to "Secret file"
+8. Upload the file
+9. give it a name of kubeconfig
+10. click on create
+
+## Step 4 - create a pipeline
 
 1. Click on the Jenkins icon at the top left to get to the home page.
 2. Click on "Create a job"
@@ -31,7 +44,7 @@ We don't want to store passwords in our files so we'll safely store this in Jenk
 8. Scroll down to the Script Path and set this to "07 - jenkins files/bam-building-jenkinsfile"
 9. Leave all other settings at the default and click on Save
 
-## Step 4 - run the pipeline
+## Step 5 - run the pipeline
 
 1. Click on the Build now button on the left menu
 
@@ -40,7 +53,7 @@ Then to watch the logs:
 2. Click on the timestamp for the build id in the builds window below the left menu
 3. Click on console output from the left menu
 
-## Step 5 - deploy the change
+## Step 6 - deploy the change
 
 NOTE - before starting this section you may wish to run `watch kubectl get po` to see the new container being deployed
 
