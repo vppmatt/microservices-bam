@@ -6,7 +6,7 @@ pipeline {
             IMAGE_NAME = "bam-building"
             DBPASSWORD = credentials('DBPASSWORD')
             BUILD_ARG1 = "--build-arg DBPASSWORD=${DBPASSWORD}"
-            BUILD_ARG2 = "--build-arg DBHOSTNAME=$(hostname)"
+            BUILD_ARG2 = "--build-arg DBHOSTNAME=\$(hostname)"
         }
     stages {
         stage('GetFromGithub') {
