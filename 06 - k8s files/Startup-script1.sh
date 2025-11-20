@@ -1,5 +1,8 @@
-sudo wget -O /etc/yum.repos.d/snapd.repo https://bboozzoo.github.io/snapd-amazon-linux/al2023/snapd.repo
-sudo dnf install snapd -y
+git clone https://github.com/albuild/snap.git
+cd snap
+bin/build
+bin/cp
+cd ~
 
 sleep 10
 
