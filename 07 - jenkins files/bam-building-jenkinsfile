@@ -2,13 +2,30 @@ pipeline {
     agent any
     environment {
             GIT_URL = "https://github.com/vppmatt/microservices-bam.git"
-            K8S_CONTROL_PLANE = '$(hostname):5001'
+            K8S_CONTROL_PLANE = ""
             IMAGE_NAME = "bam-building"
             DBPASSWORD = credentials('DBPASSWORD')
             BUILD_ARG1 = "--build-arg DBPASSWORD=${DBPASSWORD}"
-            BUILD_ARG2 = '--build-arg DBHOSTNAME=$(hostname)'
+            BUILD_ARG2 = ""
         }
     stages {
+        stage('Set vars') {
+            steps {
+                script {
+                    env.K8S_CONTROL_PLANE = sh(
+                        script: "hostname",
+                        returnStdout: true
+                    ).trim() + ":5001"
+                }
+                script {
+                    env.BUILD_ARG2 = "--build-arg DBHOSTNAME=" + sh(
+                        script: "hostname",
+                        returnStdout: true
+                    ).trim()
+                }
+            }
+        }
+
         stage('GetFromGithub') {
             steps {
                 git branch: 'main', url: GIT_URL
