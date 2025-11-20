@@ -1,9 +1,11 @@
 cd microservices-bam/06\ -\ k8s\ files/
 
 cd database
-docker build -t localhost:5001/bam-db:1.0 --build-arg DBPASSWORD=pass123! .
-docker push localhost:5001/bam-db:1.0
-kubectl apply -f deploy.yaml
+#docker build -t localhost:5001/bam-db:1.0 --build-arg DBPASSWORD=pass123! .
+#docker push localhost:5001/bam-db:1.0
+#kubectl apply -f deploy.yaml
+docker build -t bam-db:1.0 --build-arg DBPASSWORD=pass123! .
+docker run -d -p3306:3306 bam-db:1.0
 
 cd ..
 cd activeMQ/
@@ -23,7 +25,7 @@ cd ..
 cd usermanager
 chmod a+x mvnw
 ./mvnw package
-docker build -t localhost:5001/bam-user:1.0 --build-arg DBPASSWORD=pass123! .
+docker build -t localhost:5001/bam-user:1.0 --build-arg DBPASSWORD=pass123! --build-arg DBHOSTNAME="$(hostname)" .
 docker push localhost:5001/bam-user:1.0 
 kubectl apply -f deploy.yaml
 
@@ -31,7 +33,7 @@ cd ..
 cd buildingmanager
 chmod a+x mvnw
 ./mvnw package
-docker build -t localhost:5001/bam-building:1.0 --build-arg DBPASSWORD=pass123! .
+docker build -t localhost:5001/bam-building:1.0 --build-arg DBPASSWORD=pass123! --build-arg DBHOSTNAME="$(hostname)" .
 docker push localhost:5001/bam-building:1.0 
 kubectl apply -f deploy.yaml
 
@@ -39,7 +41,7 @@ cd ..
 cd accesscontrol
 chmod a+x mvnw
 ./mvnw package
-docker build -t localhost:5001/bam-access:1.0 --build-arg DBPASSWORD=pass123! .
+docker build -t localhost:5001/bam-access:1.0 --build-arg DBPASSWORD=pass123! --build-arg DBHOSTNAME="$(hostname)" .
 docker push localhost:5001/bam-access:1.0 
 kubectl apply -f deploy.yaml
 
