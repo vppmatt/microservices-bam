@@ -1,0 +1,21 @@
+[mysqld]
+# InnoDB buffer pool is the big one: keep it small for tiny DBs
+innodb_buffer_pool_size = 128M
+innodb_log_buffer_size  = 8M
+
+# MyISAM key buffer (not very relevant if you use InnoDB only)
+key_buffer_size         = 16M
+
+# Limit connections so memory per connection doesn't explode
+max_connections         = 20
+
+# Cache sizes – keep them modest
+table_open_cache        = 128
+thread_cache_size       = 8
+
+# Performance schema can use a fair bit – turn it off for tiny setups
+performance_schema      = off
+
+# Optional: small query cache (5.7 still supports it)
+query_cache_type        = 0
+query_cache_size        = 0
