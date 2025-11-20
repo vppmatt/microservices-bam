@@ -12,17 +12,16 @@ pipeline {
         stage('Set vars') {
             steps {
                 script {
-                    env.K8S_CONTROL_PLANE = sh(
-                        script: "hostname",
-                        returnStdout: true
-                    ).trim() + ":5001"
-                }
-                script {
-                    env.BUILD_ARG2 = "--build-arg DBHOSTNAME=" + sh(
+                    def host = sh(
                         script: "hostname",
                         returnStdout: true
                     ).trim()
+                    
+                    env.K8S_CONTROL_PLANE = "${host}:5001"
+                    env.BUILD_ARG2 = "--build-arg DBHOSTNAME=${host}"
                 }
+                sh 'echo "K8S_CONTROL_PLANE=$K8S_CONTROL_PLANE"'
+                sh 'echo "BUILD_ARG2=$BUILD_ARG2"'
             }
         }
 
