@@ -79,7 +79,7 @@ pipeline {
 
                     withEnv(["K8S_CONTROL_PLANE=${k8sControlPlane}"]) {
                         sh 'echo "Pushing ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}"'
-                        sh 'docker push ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}'
+                        sh 'docker push http://${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}'
                     }
                 }
             }
@@ -97,7 +97,7 @@ pipeline {
 
                     withEnv(["K8S_CONTROL_PLANE=${k8sControlPlane}"]) {
                         withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                            sh 'kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}'
+                            sh 'kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=http://${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}'
                         }
                     }
                 }

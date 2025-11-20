@@ -12,7 +12,7 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 #set up a local registry
-docker run -d --restart=always -p "127.0.0.1:${reg_port}:5000"   --name "${reg_name}" registry:2
+docker run -d --restart=always -p "${reg_port}:5000" --name "${reg_name}" registry:2
 
 cat <<EOF | kind create cluster --config=-
 kind: Cluster
