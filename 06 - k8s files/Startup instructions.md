@@ -4,6 +4,9 @@
 
 
 ```
+reg_name='kind-registry'
+reg_port='5001'
+
 #install Kubernetes (Kind)
 [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.30.0/kind-linux-amd64
 chmod +x ./kind
@@ -16,10 +19,7 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 
 #set up a local registry
-docker run -d --restart=always -p 127.0.0.1:5001:5000 --network bridge --name kind-registry registry:2
-
-#create the cluster
-kind create cluster
+docker run -d --restart=always -p "127.0.0.1:${reg_port}:5000"   --name "${reg_name}" registry:2
 
 cat <<EOF | kind create cluster --config=-
 kind: Cluster
