@@ -5,7 +5,8 @@ pipeline {
             K8S_CONTROL_PLANE = "localhost:5001"
             IMAGE_NAME = "bam-building"
             DBPASSWORD = credentials('DBPASSWORD')
-            BUILD_ARG = "--build-arg DBPASSWORD=${DBPASSWORD} --build-arg DBHOSTNAME=$(hostname)"
+            BUILD_ARG1 = "--build-arg DBPASSWORD=${DBPASSWORD}"
+            BUILD_ARG2 = "--build-arg DBHOSTNAME=$(hostname)"
         }
     stages {
         stage('GetFromGithub') {
@@ -38,7 +39,7 @@ pipeline {
         stage('Docker image build') {
             steps {
                 dir ('06 - k8s files/buildingmanager/') {
-                    sh 'docker image build -t ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID} ${BUILD_ARG} .'
+                    sh 'docker image build -t ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID} ${BUILD_ARG1} ${BUILD_ARG2} .'
                 }
             }
         }
