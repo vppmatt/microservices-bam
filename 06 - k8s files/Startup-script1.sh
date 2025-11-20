@@ -50,3 +50,32 @@ data:
     host: "localhost:${reg_port}"
     help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
 EOF
+
+# Make docker use http rather than https to access the registry
+set -e
+HOSTNAME_VALUE="$(hostname)"
+REGISTRY_HOST="${HOSTNAME_VALUE}:5001"
+DOCKER_DIR="/etc/docker"
+DAEMON_FILE="${DOCKER_DIR}/daemon.json"
+
+echo "Configuring Docker to trust insecure registry: ${REGISTRY_HOST}"
+sudo mkdir -p "${DOCKER_DIR}"
+
+sudo bash -c "cat > '${DAEMON_FILE}' <<EOF
+{
+  \"insecure-registries\": [
+    \"${REGISTRY_HOST}\"
+  ]
+}
+EOF"
+
+echo "Restarting Docker..."
+
+# Restart Docker service
+if command -v systemctl >/dev/null 2>&1; then
+    sudo systemctl restart docker
+else
+    sudo service docker restart
+fi
+
+echo "Docker has been configured for insecure registry: ${REGISTRY_HOST}"
