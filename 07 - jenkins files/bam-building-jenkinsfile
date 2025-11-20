@@ -5,7 +5,7 @@ pipeline {
             K8S_CONTROL_PLANE = "localhost:5001"
             IMAGE_NAME = "bam-building"
             DBPASSWORD = credentials('DBPASSWORD')
-            BUILD_ARG = "--build-arg DBPASSWORD=${DBPASSWORD}"
+            BUILD_ARG = "--build-arg DBPASSWORD=${DBPASSWORD} --build-arg DBHOSTNAME=$(hostname)"
         }
     stages {
         stage('GetFromGithub') {
@@ -49,12 +49,12 @@ pipeline {
             }
         }
 
-        // This stage is commented out because the deployment will be managed manually (CI vs CD)
-        // stage('Update k8s deployment to the new version') {
-        //     steps {
-        //         sh 'kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${IMAGE_NAME}:${BUILD_ID}'
-        //     }
-        // }
+        // This stage should be commented out if the deployment will be managed manually (CI vs CD)
+        stage('Update k8s deployment to the new version') {
+             steps {
+                 sh 'kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${IMAGE_NAME}:${BUILD_ID}'
+             }
+         }
 
     }
     
