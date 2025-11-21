@@ -47,7 +47,6 @@ pipeline {
                         returnStdout: true
                     ).trim()
 
-                    def k8sControlPlane = "${host}:5001"
                     def buildArg1       = "--build-arg DBPASSWORD=${env.DBPASSWORD}"
                     def buildArg2       = "--build-arg DBHOSTNAME=${host}"
 
@@ -71,16 +70,8 @@ pipeline {
         stage('Load docker image into k8s cluster') {
             steps {
                 script {
-                    def host = sh(
-                        script: 'hostname',
-                        returnStdout: true
-                    ).trim()
-                    def k8sControlPlane = "${host}:5001"
-
-                    withEnv(["K8S_CONTROL_PLANE=${k8sControlPlane}"]) {
                         sh 'echo "Pushing ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}"'
                         sh 'docker push ${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}'
-                    }
                 }
             }
         }
@@ -89,16 +80,8 @@ pipeline {
         stage('Update k8s deployment to the new version') {
              steps {
                 script {
-                    def host = sh(
-                        script: 'hostname',
-                        returnStdout: true
-                    ).trim()
-                    def k8sControlPlane = "${host}:5001"
-
-                    withEnv(["K8S_CONTROL_PLANE=${k8sControlPlane}"]) {
-                        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                             sh 'kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${K8S_CONTROL_PLANE}/${IMAGE_NAME}:${BUILD_ID}'
-                        }
                     }
                 }
             }
