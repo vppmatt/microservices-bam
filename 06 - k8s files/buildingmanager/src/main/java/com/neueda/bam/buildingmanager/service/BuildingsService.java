@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class BuildingsService {
@@ -18,7 +19,13 @@ public class BuildingsService {
 //    MessageService messageService;
 
     public List<Building> findAll() {
-        return buildingRepository.findAll();
+        List<Building> buildings = buildingRepository.findAll();
+        List<Building> ucBuildings = buildings.stream().map(b -> {
+            b.setName(b.getName().toUpperCase());
+            return b;
+
+        }).collect(Collectors.toList());
+        return ucBuildings;
     }
 
     public List<Location> getLocationsForBuilding(Integer id) {
