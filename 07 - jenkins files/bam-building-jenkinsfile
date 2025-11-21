@@ -4,6 +4,7 @@ pipeline {
             GIT_URL = "https://github.com/vppmatt/microservices-bam.git"
             IMAGE_NAME = "bam-building"
             DBPASSWORD = credentials('DBPASSWORD')
+            K8S_CONTROL_PLANE = "localhost:5001"
         }
 
     stages {
@@ -51,7 +52,6 @@ pipeline {
                     def buildArg2       = "--build-arg DBHOSTNAME=${host}"
 
                     withEnv([
-                        "K8S_CONTROL_PLANE=${k8sControlPlane}",
                         "BUILD_ARG1=${buildArg1}",
                         "BUILD_ARG2=${buildArg2}"
                     ]) {
