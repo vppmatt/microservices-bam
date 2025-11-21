@@ -99,9 +99,12 @@ done
 # 6. Connect the registry to the kind network if needed
 ###################################################
 
-if [ "$(docker inspect -f='{{json .NetworkSettings.Networks.kind}}' \"${reg_name}\")" = 'null' ]; then
-  echo \"Connecting ${reg_name} to kind network...\"
-  docker network connect "kind" "${reg_name}"
+# Only try to connect if the registry container exists
+if docker inspect "${reg_name}" >/dev/null 2>&1; then
+  # Connect; ignore error if it's already connected
+  docker network connect "kind" "${reg_name}" 2>/dev/null || true
+else
+  echo "WARNING: Registry container ${reg_name} does not exist, skipping network connect" >&2
 fi
 
 ###########################################
