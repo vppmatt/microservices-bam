@@ -54,16 +54,15 @@ fi
 # 3. Start the local registry (kind-registry)
 ###########################################
 
-if [ "\$(docker inspect -f '{{.State.Running}}' \"${reg_name}\" 2>/dev/null || true)" != 'true' ]; then
-  echo \"Starting local registry container ${reg_name} on ${REGISTRY_HOST}...\"
+if ! docker inspect "${reg_name}" >/dev/null 2>&1; then
+  echo "Starting local registry container ${reg_name} on ${REGISTRY_HOST}..."
   docker run \
     -d --restart=always \
     -p "127.0.0.1:${reg_port}:5000" \
-    --network bridge \
     --name "${reg_name}" \
     registry:2
 else
-  echo \"Registry container ${reg_name} already running\"
+  echo "Local registry container ${reg_name} already exists"
 fi
 
 ###########################################
